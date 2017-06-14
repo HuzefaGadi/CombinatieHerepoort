@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/backgroundColor"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:context="com.huzefa.combinatieherepoort.activity.SelectVehicleActivity"
+                tools:showIn="@layout/activity_select_vehicle">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/header_logo"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/logo"
+
+        android:layout_margin="25dp">
+
+        <TextView
+            android:id="@+id/selectVehicleHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:gravity="center"
+            android:text="@string/select_vehicle_heading"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
+        <AutoCompleteTextView
+            android:id="@+id/vehicleNumberAutoTextView"
+            style="@style/CustomEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/selectVehicleHeading"
+            android:layout_marginTop="20dp"
+            android:hint="@string/select_vehicle_hint"/>
+
+        <!--<Spinner
+            android:id="@+id/vehicleNumberSpinner"
+            style="@style/CustomEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/selectVehicleHeading"
+            android:layout_marginTop="20dp"
+            android:hint="@string/select_vehicle_hint"
+            android:spinnerMode="dialog"/>-->
+
+
+
+        <Button
+            style="@style/CustomButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_below="@+id/vehicleNumberAutoTextView"
+            android:id="@+id/saveVehicleButton"
+            android:text="@string/select_vehicle_button_text"/>
+
+        <TextView
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:text="@string/company_name"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:orientation="vertical"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:paddingTop="20dp"
+        android:layout_height="100dp"
+        android:background="@color/backgroundColor"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            app:srcCompat="@drawable/nav_menu_header_logo"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:paddingBottom="30dp"
+        android:paddingTop="30dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp">
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="left"
+            app:srcCompat="@android:drawable/sym_def_app_icon"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/profileImage"
+            android:layout_alignTop="@+id/profileImage"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/profileImage"
+
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:id="@+id/name"
+                android:textColor="@color/textColor"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/username"
+                android:text="Username"
+                android:textColor="@color/textColor"
+                android:textSize="15sp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

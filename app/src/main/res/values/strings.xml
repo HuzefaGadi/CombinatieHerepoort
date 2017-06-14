@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Combinatie Herepoort</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_login">LoginActivity</string>
+
+
+    <string name="company_name">Ontwikkeld door LabsIT</string>
+    <string name="login_screen_text">Log in om verder te gaan</string>
+    <string name="username_hint">E-mailadres</string>
+    <string name="password_hint">Wachtwoord</string>
+    <string name="login_button_text">INLOGGEN</string>
+
+
+    <string name="select_vehicle_heading">Selecteer hier uw voertuig...</string>
+    <string name="select_vehicle_button_text">BEVESTIGEN</string>
+    <string name="select_vehicle_hint">SELECT-BOX (option to search)</string>
+
+
+    <string name="menu_orders">Orders</string>
+    <string name="menu_settings">Instellingen</string>
+    <string name="menu_logout">Uitloggen</string>
+    <string name="title_activity_select_selection">SelectSelectionActivity</string>
+</resources>
