@@ -21,14 +21,17 @@ public interface RestApi {
     @POST("login")
     Observable<LoginModel> loginUser(@Body CredentialsModel body);
 
-    @GET("selectkenteken")
-    Observable<VehiclesModel> getVehicles(@Query("api_token") String apiToken);
+    @POST("selectkenteken")
+    Observable<VehiclesModel> getVehicles(@Header("Content-Type") String contentType, @Body JsonObject body);
 
     @POST("storekenteken")
     Observable<JsonObject> saveVehicle(@Header("Content-Type") String contentType, @Body JsonObject body);
 
     @POST("orders")
     Observable<OrderModelList> getOrders(@Header("Content-Type") String contentType, @Body JsonObject body);
+
+    @POST("logout")
+    Observable<JsonObject> logout(@Header("Content-Type") String contentType, @Body JsonObject body);
 
 
 }

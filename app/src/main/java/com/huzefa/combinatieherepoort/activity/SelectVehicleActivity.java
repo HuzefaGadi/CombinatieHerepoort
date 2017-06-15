@@ -76,7 +76,9 @@ public class SelectVehicleActivity extends AppCompatActivity {
         mTypeFace = Utility.getTypeFace(this);
         mSaveVehicleButton.setTypeface(mTypeFace);
         mLoginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
-        mRestApi.getVehicles(mLoginModel.getToken())
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("api_token", mLoginModel.getToken());
+        mRestApi.getVehicles("application/json", jsonObject)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<VehiclesModel>() {
