@@ -36,6 +36,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+
 public class SelectVehicleActivity extends AppCompatActivity {
 
     @BindView(R.id.vehicleNumberAutoTextView)
@@ -68,6 +70,7 @@ public class SelectVehicleActivity extends AppCompatActivity {
         mProgressDialog.show();
         mVehicleNumberAutoTextView.setThreshold(1);
         Retrofit retrofit = ((AppManager) getApplicationContext()).getRetrofit();
+
         mRestApi = retrofit.create(RestApi.class);
         mSharedPreferences = Utility.getSharedPrefernce(this);
         mTypeFace = Utility.getTypeFace(this);
@@ -89,7 +92,7 @@ public class SelectVehicleActivity extends AppCompatActivity {
                             mVehicleList.add(new VehicleBean(entry.getKey(), entry.getValue()));
                         }
                         CustomSpinnerAdapter<VehicleBean> adapter = new CustomSpinnerAdapter<VehicleBean>(
-                                getApplicationContext(), android.R.layout.simple_spinner_item, mVehicleList);
+                                getApplicationContext(), R.layout.custom_auto_complete_dropdown, mVehicleList);
 
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         mVehicleNumberAutoTextView.setAdapter(adapter);
@@ -120,6 +123,7 @@ public class SelectVehicleActivity extends AppCompatActivity {
             for (VehicleBean vehicleBean : mVehicleList) {
                 if (vehicleBean.toString().equalsIgnoreCase(vehicleName)) {
                     vehicleTemp = vehicleBean;
+                    break;
                 }
             }
             final VehicleBean vehicle = vehicleTemp;
@@ -141,7 +145,7 @@ public class SelectVehicleActivity extends AppCompatActivity {
                                 mProgressDialog.dismiss();
                                 if (s != null && s.has("status") && s.get("status").getAsString().equalsIgnoreCase("success")) {
                                     mSharedPreferences.edit().putString(Constants.PREF_VEHICLE, vehicle.id).commit();
-                                    getApplicationContext().startActivity(new Intent(SelectVehicleActivity.this, MainActivity.class));
+                                    startActivity(new Intent(SelectVehicleActivity.this, MainActivity.class));
                                     finish();
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Error occured " + s, Toast.LENGTH_LONG).show();
@@ -159,6 +163,9 @@ public class SelectVehicleActivity extends AppCompatActivity {
 
                             }
                         });
+            } else {
+                mProgressDialog.dismiss();
+                Toast.makeText(this,"Vehicle not found please try some other name",Toast.LENGTH_LONG).show();
             }
 
         }

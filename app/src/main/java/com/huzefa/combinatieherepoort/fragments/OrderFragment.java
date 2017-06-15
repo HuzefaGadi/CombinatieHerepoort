@@ -82,9 +82,15 @@ public class OrderFragment extends Fragment {
 
                 @Override
                 public void onNext(@NonNull OrderModelList orderModels) {
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    recyclerView.setAdapter(new MyOrderRecyclerViewAdapter(getContext(), orderModels.orders, mListener));
                     mProgressDialog.dismiss();
+                    if (orderModels.orders != null) {
+                        if(orderModels.orders.isEmpty()) {
+                            Toast.makeText(getContext(),"Currently no orders are available", Toast.LENGTH_LONG).show();
+                        } else {
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                            recyclerView.setAdapter(new MyOrderRecyclerViewAdapter(getContext(), orderModels.orders, mListener));
+                        }
+                    }
                 }
 
                 @Override

@@ -16,12 +16,11 @@ import com.google.gson.Gson;
 import com.huzefa.combinatieherepoort.Constants;
 import com.huzefa.combinatieherepoort.R;
 import com.huzefa.combinatieherepoort.fragments.OrderFragment;
-import com.huzefa.combinatieherepoort.beans.OrderBean;
 import com.huzefa.combinatieherepoort.models.LoginModel;
+import com.huzefa.combinatieherepoort.models.OrderModel;
 import com.huzefa.combinatieherepoort.models.UserModel;
 import com.huzefa.combinatieherepoort.utility.Utility;
 
-import okhttp3.internal.Util;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OrderFragment.OnListFragmentInteractionListener {
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(OrderBean item) {
+    public void onListFragmentInteraction(OrderModel item) {
 
     }
 }
