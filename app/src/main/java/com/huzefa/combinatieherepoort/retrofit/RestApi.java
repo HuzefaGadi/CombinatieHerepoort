@@ -3,11 +3,10 @@ package com.huzefa.combinatieherepoort.retrofit;
 import com.google.gson.JsonObject;
 import com.huzefa.combinatieherepoort.models.CredentialsModel;
 import com.huzefa.combinatieherepoort.models.LoginModel;
+import com.huzefa.combinatieherepoort.models.OrderModelList;
 import com.huzefa.combinatieherepoort.models.VehiclesModel;
 
-
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -27,6 +26,9 @@ public interface RestApi {
 
     @POST("storekenteken")
     Observable<JsonObject> saveVehicle(@Header("Content-Type") String contentType, @Body JsonObject body);
+
+    @POST("orders")
+    Observable<OrderModelList> getOrders(@Header("Content-Type") String contentType, @Body JsonObject body);
 
 
 }

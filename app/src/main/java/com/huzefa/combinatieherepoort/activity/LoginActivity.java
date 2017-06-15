@@ -31,8 +31,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -97,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
         credentialsModel.setEmail(username.getText().toString());
         credentialsModel.setPassword(password.getText().toString());
         mRestApi.loginUser(credentialsModel)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<LoginModel>() {
                     @Override

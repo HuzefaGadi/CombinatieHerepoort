@@ -11,22 +11,22 @@ import android.widget.TextView;
 
 import com.huzefa.combinatieherepoort.R;
 import com.huzefa.combinatieherepoort.fragments.OrderFragment.OnListFragmentInteractionListener;
-import com.huzefa.combinatieherepoort.beans.OrderBean;
+import com.huzefa.combinatieherepoort.models.OrderModel;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link OrderBean} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link OrderModel} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
 public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecyclerViewAdapter.ViewHolder> {
 
-    private final List<OrderBean> mValues;
+    private final List<OrderModel> mValues;
     private final OnListFragmentInteractionListener mListener;
     private Context mContext;
     private Typeface mTypeFace;
 
-    public MyOrderRecyclerViewAdapter(Context context, List<OrderBean> items, OnListFragmentInteractionListener listener) {
+    public MyOrderRecyclerViewAdapter(Context context, List<OrderModel> items, OnListFragmentInteractionListener listener) {
         mContext = context;
         mValues = items;
         mListener = listener;
@@ -44,8 +44,8 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mPartNumberText.setText(mValues.get(position).partyNumber);
-        holder.mContentView.setText(mValues.get(position).description);
+        holder.mPartNumberText.setText(mValues.get(position).lotNumber);
+        holder.mContentView.setText(mValues.get(position).drainageLocation);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,13 +64,13 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mPartNumberText;
-        public final TextView mContentView;
-        public OrderBean mItem;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        final View mView;
+        final TextView mPartNumberText;
+        final TextView mContentView;
+        OrderModel mItem;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             mPartNumberText = (TextView) view.findViewById(R.id.partyNumber);
