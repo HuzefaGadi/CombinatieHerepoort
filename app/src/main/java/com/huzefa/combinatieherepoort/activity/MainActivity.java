@@ -23,7 +23,9 @@ import com.huzefa.combinatieherepoort.AppManager;
 import com.huzefa.combinatieherepoort.Constants;
 import com.huzefa.combinatieherepoort.R;
 import com.huzefa.combinatieherepoort.adapters.MyOrderRecyclerViewAdapter;
+import com.huzefa.combinatieherepoort.fragments.OrderDetailsFragment;
 import com.huzefa.combinatieherepoort.fragments.OrderFragment;
+import com.huzefa.combinatieherepoort.interfaces.OnListFragmentInteractionListener;
 import com.huzefa.combinatieherepoort.models.LoginModel;
 import com.huzefa.combinatieherepoort.models.OrderModel;
 import com.huzefa.combinatieherepoort.models.OrderModelList;
@@ -42,7 +44,7 @@ import static java.security.AccessController.getContext;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OrderFragment.OnListFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnListFragmentInteractionListener {
 
     private LoginModel mLoginModel;
     private Typeface mTypeFace;
@@ -114,7 +116,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(OrderModel item) {
+        OrderDetailsFragment orderDetailsFragment = OrderDetailsFragment.newInstance(item.id);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_content,orderDetailsFragment)
+                .addToBackStack("order_details")
+                .commit();
+    }
 
+    @Override
+    public void setTitle(String title) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(title);
     }
 
     private void logOut() {

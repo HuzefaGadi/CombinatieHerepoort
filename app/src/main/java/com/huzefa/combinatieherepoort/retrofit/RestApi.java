@@ -3,6 +3,7 @@ package com.huzefa.combinatieherepoort.retrofit;
 import com.google.gson.JsonObject;
 import com.huzefa.combinatieherepoort.models.CredentialsModel;
 import com.huzefa.combinatieherepoort.models.LoginModel;
+import com.huzefa.combinatieherepoort.models.OrderModel;
 import com.huzefa.combinatieherepoort.models.OrderModelList;
 import com.huzefa.combinatieherepoort.models.VehiclesModel;
 
@@ -30,8 +31,14 @@ public interface RestApi {
     @POST("orders")
     Observable<OrderModelList> getOrders(@Header("Content-Type") String contentType, @Body JsonObject body);
 
+    @POST("order")
+    Observable<OrderModel> getOrder(@Header("Content-Type") String contentType, @Body JsonObject body);
+
     @POST("logout")
     Observable<JsonObject> logout(@Header("Content-Type") String contentType, @Body JsonObject body);
+
+    @POST("order/confirm")
+    Observable<JsonObject> confirm (@Header("Content-Type") String contentType, @Body JsonObject body);
 
 
 }

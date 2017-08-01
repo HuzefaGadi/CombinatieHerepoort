@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.huzefa.combinatieherepoort.R;
-import com.huzefa.combinatieherepoort.fragments.OrderFragment.OnListFragmentInteractionListener;
+import com.huzefa.combinatieherepoort.interfaces.OnListFragmentInteractionListener;
 import com.huzefa.combinatieherepoort.models.OrderModel;
 
 import java.util.List;

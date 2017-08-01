@@ -19,6 +19,7 @@ import com.huzefa.combinatieherepoort.AppManager;
 import com.huzefa.combinatieherepoort.Constants;
 import com.huzefa.combinatieherepoort.R;
 import com.huzefa.combinatieherepoort.adapters.MyOrderRecyclerViewAdapter;
+import com.huzefa.combinatieherepoort.interfaces.OnListFragmentInteractionListener;
 import com.huzefa.combinatieherepoort.models.LoginModel;
 import com.huzefa.combinatieherepoort.models.OrderModel;
 import com.huzefa.combinatieherepoort.models.OrderModelList;
@@ -65,6 +66,7 @@ public class OrderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_list, container, false);
+        mListener.setTitle(getString(R.string.app_name));
         final RecyclerView recyclerView = (RecyclerView) view;
         mProgressDialog = Utility.getProgressDialog(getContext(),"Please wait..","Loading Orders..");
         mProgressDialog.show();
@@ -123,19 +125,5 @@ public class OrderFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(OrderModel item);
     }
 }
