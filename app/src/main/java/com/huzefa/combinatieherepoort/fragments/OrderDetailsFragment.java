@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.huzefa.combinatieherepoort.models.LoginModel;
 import com.huzefa.combinatieherepoort.models.OrderModel;
 import com.huzefa.combinatieherepoort.models.SenderModel;
 import com.huzefa.combinatieherepoort.retrofit.RestApi;
+import com.huzefa.combinatieherepoort.utility.CustomDialog;
 import com.huzefa.combinatieherepoort.utility.Utility;
 
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
+import static android.R.attr.order;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -52,7 +56,7 @@ import retrofit2.Retrofit;
  * Use the {@link OrderDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OrderDetailsFragment extends Fragment {
+public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDialogCommunicationListener {
     // the fragment initialization parameters,
     private static final String ARG_ORDER_ID = "orderId";
     private String mOrderId;
@@ -199,6 +203,9 @@ public class OrderDetailsFragment extends Fragment {
                         }
                     });
                     builder.show();
+                } else {
+                    final CustomDialog customDialog = new CustomDialog(getActivity(), OrderDetailsFragment.this);
+                    customDialog.show();
                 }
             }
         });
@@ -232,28 +239,6 @@ public class OrderDetailsFragment extends Fragment {
         expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
         expandableListAdapter = new OrderDetailsAdapter(getContext(), expandableListTitle, expandableListIcon, expandableListDetail);
         expandableListView.setAdapter(expandableListAdapter);
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-            }
-        });
-
-        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-
-            }
-        });
-
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                return false;
-            }
-        });
 
         expandableListView.expandGroup(0);
         expandableListView.expandGroup(1);
@@ -307,6 +292,7 @@ public class OrderDetailsFragment extends Fragment {
                             order.status = 2;
                             mStatusIcon.setImageResource(R.drawable.icon_accepted);
                             mOrderActionButton.setBackgroundColor(getResources().getColor(R.color.order_accepted_button_color));
+                            mOrderActionButton.setText(getString(R.string.order_accepted_button_text));
                         } else {
                             Toast.makeText(getContext(), "Error occured " + s, Toast.LENGTH_LONG).show();
                         }
@@ -325,5 +311,49 @@ public class OrderDetailsFragment extends Fragment {
                 });
     }
 
+
+    @Override
+    public void setWeight(final CustomDialog customDialog, String weight) {
+
+        final ProgressDialog progressDialog = Utility.getProgressDialog(getActivity(), "Please wait..", "Confirming");
+        progressDialog.show();
+        LoginModel loginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("api_token", loginModel.getToken());
+        jsonObject.addProperty("id", mOrderId);
+        jsonObject.addProperty("hoeveelheid", weight);
+        mRestApi.setweight("application/json", jsonObject)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull JsonObject s) {
+                        progressDialog.dismiss();
+                        if (s != null && s.has("status") && s.get("status").getAsString().equalsIgnoreCase("success")) {
+                            customDialog.dismiss();
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        } else {
+                            Toast.makeText(getContext(), "Error occured " + s, Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getContext(), "Error occured " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
 
 }

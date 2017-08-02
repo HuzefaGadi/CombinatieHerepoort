@@ -8,4 +8,5 @@
     <color name="textColor">#bdbdbd</color>
     <color name="order_accepted_button_color">#0000FF</color>
     <color name="order_pending_button_color">#000000</color>
+    <color name="orange">#ffa600</color>
 </resources>

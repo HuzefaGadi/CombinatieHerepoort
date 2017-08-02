@@ -40,6 +40,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
+import static android.R.attr.id;
 import static java.security.AccessController.getContext;
 
 
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity
         Retrofit retrofit = ((AppManager) getApplicationContext()).getRetrofit();
         mRestApi = retrofit.create(RestApi.class);
         mSharedPreferences = Utility.getSharedPrefernce(this);
+        navigationView.getMenu().performIdentifierAction(R.id.nav_orders, 0);
 
     }
 
