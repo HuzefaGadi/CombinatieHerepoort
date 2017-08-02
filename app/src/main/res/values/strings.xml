@@ -20,11 +20,20 @@
 
     <string name="select_vehicle_heading">Selecteer hier uw voertuig...</string>
     <string name="select_vehicle_button_text">BEVESTIGEN</string>
-    <string name="select_vehicle_hint">SELECT-BOX (option to search)</string>
+    <string name="select_vehicle_hint">type uw kenteken</string>
 
 
     <string name="menu_orders">Orders</string>
     <string name="menu_settings">Instellingen</string>
     <string name="menu_logout">Uitloggen</string>
     <string name="title_activity_select_selection">SelectSelectionActivity</string>
+
+
+    <string name="order_pending_button_text">BEVESTIGEN</string>
+    <string name="order_accepted_button_text">GEWICHT INVOEREN</string>
+
+    <string name="comfirm_order_dialog_title">GEWICHT INVOEREN</string>
+    <string name="comfirm_order_dialog_accept_button_text">BEVESTIGEN</string>
+    <string name="comfirm_order_dialog_dummy_button_text">OPVRAGEN</string>
+    <string name="confirm_order_dialog_input_hint">Decimal input (0.000 format)</string>
 </resources>

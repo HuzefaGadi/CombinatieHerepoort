@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:paddingLeft="85dp"
+              android:paddingBottom="30dp"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:textSize="@dimen/normal_text_size"
+        android:text="Hello"/>
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/normal_text_size"
+        android:paddingTop="10dp"
+        android:text="Hello"/>
+
+    <TextView
+        android:id="@+id/postcode_city"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/normal_text_size"
+        android:paddingTop="10dp"
+        android:text="Hello"/>
+</LinearLayout>

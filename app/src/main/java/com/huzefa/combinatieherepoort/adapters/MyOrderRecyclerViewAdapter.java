@@ -7,10 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huzefa.combinatieherepoort.R;
-import com.huzefa.combinatieherepoort.fragments.OrderFragment.OnListFragmentInteractionListener;
+import com.huzefa.combinatieherepoort.interfaces.OnListFragmentInteractionListener;
 import com.huzefa.combinatieherepoort.models.OrderModel;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
         holder.mItem = mValues.get(position);
         holder.mPartNumberText.setText(mValues.get(position).lotNumber);
         holder.mContentView.setText(mValues.get(position).drainageLocation);
-
+        holder.mStatusIcon.setImageResource(mValues.get(position).status == 1 ? R.drawable.icon_pending : R.drawable.icon_accepted);
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,6 +69,7 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
         final View mView;
         final TextView mPartNumberText;
         final TextView mContentView;
+        final ImageView mStatusIcon;
         OrderModel mItem;
 
         ViewHolder(View view) {
@@ -77,6 +79,7 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
             mPartNumberText.setTypeface(mTypeFace);
             mContentView = (TextView) view.findViewById(R.id.content);
             mContentView.setTypeface(mTypeFace);
+            mStatusIcon = (ImageView) view.findViewById(R.id.statusIcon);
         }
 
         @Override
