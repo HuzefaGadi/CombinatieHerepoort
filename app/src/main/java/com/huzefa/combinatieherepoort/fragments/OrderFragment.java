@@ -73,7 +73,7 @@ public class OrderFragment extends Fragment {
         LoginModel loginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("api_token", loginModel.getToken());
-        mRestApi.getOrders("application/json", jsonObject)
+        mRestApi.getOrders(jsonObject)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Observer<OrderModelList>() {
@@ -98,6 +98,9 @@ public class OrderFragment extends Fragment {
                 @Override
                 public void onError(@NonNull Throwable e) {
                     Toast.makeText(getContext(), "Error Occured "+e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                    if(e.getLocalizedMessage().contains("401 Unauthorized")) {
+                        mListener.logOutUser();
+                    }
                     mProgressDialog.dismiss();
                 }
 

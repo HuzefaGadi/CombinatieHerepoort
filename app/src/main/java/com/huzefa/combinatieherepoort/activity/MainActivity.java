@@ -10,7 +10,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,13 +21,12 @@ import com.google.gson.JsonObject;
 import com.huzefa.combinatieherepoort.AppManager;
 import com.huzefa.combinatieherepoort.Constants;
 import com.huzefa.combinatieherepoort.R;
-import com.huzefa.combinatieherepoort.adapters.MyOrderRecyclerViewAdapter;
 import com.huzefa.combinatieherepoort.fragments.OrderDetailsFragment;
 import com.huzefa.combinatieherepoort.fragments.OrderFragment;
+import com.huzefa.combinatieherepoort.fragments.RecieptFragment;
 import com.huzefa.combinatieherepoort.interfaces.OnListFragmentInteractionListener;
 import com.huzefa.combinatieherepoort.models.LoginModel;
 import com.huzefa.combinatieherepoort.models.OrderModel;
-import com.huzefa.combinatieherepoort.models.OrderModelList;
 import com.huzefa.combinatieherepoort.models.UserModel;
 import com.huzefa.combinatieherepoort.retrofit.RestApi;
 import com.huzefa.combinatieherepoort.utility.Utility;
@@ -39,9 +37,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
-
-import static android.R.attr.id;
-import static java.security.AccessController.getContext;
 
 
 public class MainActivity extends AppCompatActivity
@@ -58,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mLoginModel = new Gson().fromJson(Utility.getSharedPrefernce(this).getString(Constants.PREF_USER,null), LoginModel.class);
+        mLoginModel = new Gson().fromJson(Utility.getSharedPrefernce(this).getString(Constants.PREF_USER, null), LoginModel.class);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -73,12 +68,10 @@ public class MainActivity extends AppCompatActivity
         TextView username = (TextView) headerLayout.findViewById(R.id.username);
         name.setTypeface(mTypeFace);
         username.setTypeface(mTypeFace);
-        UserModel user = mLoginModel.getUser();
-        if(user!=null) {
-            name.setText(user.getName());
-            username.setText(user.getEmail());
+        if (mLoginModel != null) {
+            name.setText(mLoginModel.getName());
+            username.setText(mLoginModel.getEmail());
         }
-        username.setText(mLoginModel.getEmail());
         Retrofit retrofit = ((AppManager) getApplicationContext()).getRetrofit();
         mRestApi = retrofit.create(RestApi.class);
         mSharedPreferences = Utility.getSharedPrefernce(this);
@@ -120,7 +113,7 @@ public class MainActivity extends AppCompatActivity
     public void onListFragmentInteraction(OrderModel item) {
         OrderDetailsFragment orderDetailsFragment = OrderDetailsFragment.newInstance(item.id);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_content,orderDetailsFragment)
+                .replace(R.id.fragment_content, orderDetailsFragment)
                 .addToBackStack("order_details")
                 .commit();
     }
@@ -131,13 +124,27 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle(title);
     }
 
+    @Override
+    public void showPdf(String id) {
+        RecieptFragment orderDetailsFragment = RecieptFragment.newInstance(id);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_content, orderDetailsFragment)
+                .addToBackStack("order_reciept")
+                .commit();
+    }
+
+    @Override
+    public void logOutUser() {
+        Utility.logoutUser(this);
+    }
+
     private void logOut() {
-        final ProgressDialog progressDialog = Utility.getProgressDialog(this,"Please wait..","Logging out..");
+        final ProgressDialog progressDialog = Utility.getProgressDialog(this, "Please wait..", "Logging out..");
         progressDialog.show();
         LoginModel loginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("api_token", loginModel.getToken());
-        mRestApi.logout("application/json", jsonObject)
+        mRestApi.logout(jsonObject)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
@@ -162,6 +169,9 @@ public class MainActivity extends AppCompatActivity
                     public void onError(@NonNull Throwable e) {
                         progressDialog.dismiss();
                         Toast.makeText(getApplicationContext(), "Error occured " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        if(e.getLocalizedMessage().contains("401 Unauthorized")) {
+                            logOutUser();
+                        }
                     }
 
                     @Override

@@ -10,6 +10,7 @@ import com.huzefa.combinatieherepoort.models.VehiclesModel;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**
@@ -21,25 +22,32 @@ public interface RestApi {
     Observable<LoginModel> loginUser(@Body CredentialsModel body);
 
     @POST("selectkenteken")
-    Observable<VehiclesModel> getVehicles(@Header("Content-Type") String contentType, @Body JsonObject body);
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    Observable<VehiclesModel> getVehicles(@Body JsonObject body);
 
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("storekenteken")
-    Observable<JsonObject> saveVehicle(@Header("Content-Type") String contentType, @Body JsonObject body);
+    Observable<JsonObject> saveVehicle(@Body JsonObject body);
 
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("orders")
-    Observable<OrderModelList> getOrders(@Header("Content-Type") String contentType, @Body JsonObject body);
+    Observable<OrderModelList> getOrders(@Body JsonObject body);
 
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("order")
-    Observable<OrderModel> getOrder(@Header("Content-Type") String contentType, @Body JsonObject body);
+    Observable<OrderModel> getOrder(@Body JsonObject body);
 
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("logout")
-    Observable<JsonObject> logout(@Header("Content-Type") String contentType, @Body JsonObject body);
+    Observable<JsonObject> logout(@Body JsonObject body);
 
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("order/confirm")
-    Observable<JsonObject> confirm(@Header("Content-Type") String contentType, @Body JsonObject body);
+    Observable<JsonObject> confirm(@Body JsonObject body);
 
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("order/setweight")
-    Observable<JsonObject> setweight(@Header("Content-Type") String contentType, @Body JsonObject body);
+    Observable<JsonObject> setweight(@Body JsonObject body);
 
 
 }

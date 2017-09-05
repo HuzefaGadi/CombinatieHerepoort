@@ -51,7 +51,9 @@
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:background="@color/order_accepted_button_color"
-            android:text="@string/comfirm_order_dialog_accept_button_text"/>
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/comfirm_order_dialog_accept_button_text" />
 
         <Button
             android:id="@+id/dummy"
@@ -61,7 +63,9 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:background="@color/orange"
-            android:text="@string/comfirm_order_dialog_dummy_button_text"/>
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/comfirm_order_dialog_dummy_button_text" />
     </LinearLayout>
 
 </LinearLayout>

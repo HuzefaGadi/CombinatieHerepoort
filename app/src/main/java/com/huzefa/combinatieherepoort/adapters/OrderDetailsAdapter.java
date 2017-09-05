@@ -52,21 +52,33 @@ public class OrderDetailsAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        final SenderModel senderModel = (SenderModel) getChild(listPosition, expandedListPosition);
+        final SenderModel senderModel = getChild(listPosition, expandedListPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_item, null);
         }
-        TextView name = (TextView) convertView.findViewById(R.id.name);
-        name.setText(senderModel.name);
-        name.setTypeface(font);
-        TextView address = (TextView) convertView.findViewById(R.id.address);
-        address.setText(senderModel.address);
-        address.setTypeface(font);
-        TextView postalCodeAndCity = (TextView) convertView.findViewById(R.id.postcode_city);
-        postalCodeAndCity.setText(senderModel.postcode + " " + senderModel.city);
-        postalCodeAndCity.setTypeface(font);
+        if(listPosition == 3 && senderModel.name == null) {
+            TextView name = (TextView) convertView.findViewById(R.id.name);
+            name.setText("Geen bemiddelaar");
+            name.setTypeface(font);
+            TextView address = (TextView) convertView.findViewById(R.id.address);
+            address.setText("");
+            address.setTypeface(font);
+            TextView postalCodeAndCity = (TextView) convertView.findViewById(R.id.postcode_city);
+            postalCodeAndCity.setText("");
+            postalCodeAndCity.setTypeface(font);
+        } else {
+            TextView name = (TextView) convertView.findViewById(R.id.name);
+            name.setText(senderModel.name);
+            name.setTypeface(font);
+            TextView address = (TextView) convertView.findViewById(R.id.address);
+            address.setText(senderModel.address);
+            address.setTypeface(font);
+            TextView postalCodeAndCity = (TextView) convertView.findViewById(R.id.postcode_city);
+            postalCodeAndCity.setText(senderModel.postcode + " " + senderModel.city);
+            postalCodeAndCity.setTypeface(font);
+        }
         return convertView;
     }
 
