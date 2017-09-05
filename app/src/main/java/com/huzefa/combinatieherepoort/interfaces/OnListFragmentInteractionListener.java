@@ -10,4 +10,6 @@ public interface OnListFragmentInteractionListener {
 
     void onListFragmentInteraction(OrderModel item);
     void setTitle(String title);
+    void showPdf(String id);
+    void logOutUser();
 }

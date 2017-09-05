@@ -78,7 +78,7 @@ public class SelectVehicleActivity extends AppCompatActivity {
         mLoginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("api_token", mLoginModel.getToken());
-        mRestApi.getVehicles("application/json", jsonObject)
+        mRestApi.getVehicles(jsonObject)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<VehiclesModel>() {
@@ -105,6 +105,9 @@ public class SelectVehicleActivity extends AppCompatActivity {
                     public void onError(@NonNull Throwable e) {
                         Toast.makeText(getApplicationContext(), "Some error happened " + e.getMessage(), Toast.LENGTH_LONG).show();
                         mProgressDialog.dismiss();
+                        if(e.getLocalizedMessage().contains("401 Unauthorized")) {
+                            Utility.logoutUser(SelectVehicleActivity.this);
+                        }
                     }
 
                     @Override
@@ -133,7 +136,7 @@ public class SelectVehicleActivity extends AppCompatActivity {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("api_token", mLoginModel.getToken());
                 jsonObject.addProperty("selectkenteken", Integer.parseInt(vehicle.id));
-                mRestApi.saveVehicle("application/json", jsonObject)
+                mRestApi.saveVehicle(jsonObject)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<JsonObject>() {
@@ -158,6 +161,9 @@ public class SelectVehicleActivity extends AppCompatActivity {
                             public void onError(@NonNull Throwable e) {
                                 mProgressDialog.dismiss();
                                 Toast.makeText(getApplicationContext(), "Error occured " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                if(e.getLocalizedMessage().contains("401 Unauthorized")) {
+                                    Utility.logoutUser(SelectVehicleActivity.this);
+                                }
                             }
 
                             @Override

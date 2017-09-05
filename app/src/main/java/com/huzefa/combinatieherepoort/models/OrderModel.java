@@ -15,6 +15,8 @@ public class OrderModel {
 
     public int status;
 
+    public String bonnummer;
+
     @SerializedName("herkomst")
     public String drainageLocation;
 
@@ -33,6 +35,7 @@ public class OrderModel {
     public SenderModel verwerkingslocatie;
     public SenderModel afzender;
     public SenderModel ontdoener;
+    public SenderModel bemiddelaar;
     public SenderModel vervoerder;
 
 }

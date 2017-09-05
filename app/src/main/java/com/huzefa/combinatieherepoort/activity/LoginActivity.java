@@ -80,8 +80,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setTypeface(mTypeFace);
         loginText.setTypeface(mTypeFace);
         footer.setTypeface(mTypeFace);
-        username.setText("test@test");
-        password.setText("test");
     }
 
     @OnClick(R.id.loginButton)

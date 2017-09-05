@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -63,6 +66,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
     private RestApi mRestApi;
     private ProgressDialog mProgressDialog;
     private SharedPreferences mSharedPreferences;
+    private OrderModel mOrderModel;
 
     ExpandableListView expandableListView;
     ExpandableListAdapter expandableListAdapter;
@@ -116,6 +120,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_order_details, container, false);
         expandableListView = (ExpandableListView) view.findViewById(R.id.expandableListView);
 
@@ -125,7 +130,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("api_token", loginModel.getToken());
         jsonObject.addProperty("id", mOrderId);
-        mRestApi.getOrder("application/json", jsonObject)
+        mRestApi.getOrder(jsonObject)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<OrderModel>() {
@@ -146,6 +151,9 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
                     public void onError(@NonNull Throwable e) {
                         Toast.makeText(getContext(), "Error Occured " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         mProgressDialog.dismiss();
+                        if(e.getLocalizedMessage().contains("401 Unauthorized")) {
+                            mListener.logOutUser();
+                        }
                     }
 
                     @Override
@@ -157,6 +165,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
     }
 
     private void showOrderDetails(final OrderModel order) {
+        mOrderModel = order;
         mListener.setTitle(order.lotNumber);
         mHeaderView = getActivity().getLayoutInflater().inflate(R.layout.order_list_header, null);
         mStatusIcon = (ImageView) mHeaderView.findViewById(R.id.statusIcon);
@@ -215,6 +224,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
         expandableListDetail.put("Afvoerlocatie", order.afvoerlocatie);
         expandableListDetail.put("Verwerkingslocatie", order.verwerkingslocatie);
         expandableListDetail.put("Afzender", order.afzender);
+        expandableListDetail.put("Bemiddelaar", order.bemiddelaar);
         expandableListDetail.put("Ontdoener", order.ontdoener);
         expandableListDetail.put("Vervoerder", order.vervoerder);
 
@@ -222,6 +232,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
         expandableListIcon = new ArrayList<>();
         expandableListIcon.add(R.drawable.truck);
         expandableListIcon.add(R.drawable.factory);
+        expandableListIcon.add(R.drawable.user);
         expandableListIcon.add(R.drawable.user);
         expandableListIcon.add(R.drawable.user);
         expandableListIcon.add(R.drawable.construction_worker);
@@ -276,7 +287,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("api_token", loginModel.getToken());
         jsonObject.addProperty("id", mOrderId);
-        mRestApi.confirm("application/json", jsonObject)
+        mRestApi.confirm(jsonObject)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
@@ -302,6 +313,9 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
                     public void onError(@NonNull Throwable e) {
                         progressDialog.dismiss();
                         Toast.makeText(getContext(), "Error occured " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        if(e.getLocalizedMessage().contains("401 Unauthorized")) {
+                            mListener.logOutUser();
+                        }
                     }
 
                     @Override
@@ -322,7 +336,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
         jsonObject.addProperty("api_token", loginModel.getToken());
         jsonObject.addProperty("id", mOrderId);
         jsonObject.addProperty("hoeveelheid", weight);
-        mRestApi.setweight("application/json", jsonObject)
+        mRestApi.setweight(jsonObject)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
@@ -347,6 +361,9 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
                     public void onError(@NonNull Throwable e) {
                         progressDialog.dismiss();
                         Toast.makeText(getContext(), "Error occured " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        if(e.getLocalizedMessage().contains("401 Unauthorized")) {
+                            mListener.logOutUser();
+                        }
                     }
 
                     @Override
@@ -356,4 +373,23 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
                 });
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                if(mOrderModel!=null){
+                    mListener.showPdf(mOrderModel.bonnummer);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

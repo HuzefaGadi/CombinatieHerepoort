@@ -17,8 +17,9 @@ public class LoginModel {
     private String sessionName;
     @SerializedName("email")
     private String email;
-    private UserModel user;
     private String uid;
+    @SerializedName("naam")
+    private String name;
 
 
     public String getStatus() {
@@ -53,14 +54,6 @@ public class LoginModel {
         this.sessionName = sessionName;
     }
 
-    public UserModel getUser() {
-        return user;
-    }
-
-    public void setUser(UserModel user) {
-        this.user = user;
-    }
-
     public String getUid() {
         return uid;
     }
@@ -75,5 +68,13 @@ public class LoginModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

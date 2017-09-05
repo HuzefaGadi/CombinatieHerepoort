@@ -36,4 +36,5 @@
     <string name="comfirm_order_dialog_accept_button_text">BEVESTIGEN</string>
     <string name="comfirm_order_dialog_dummy_button_text">OPVRAGEN</string>
     <string name="confirm_order_dialog_input_hint">Decimal input (0.000 format)</string>
+    <string name="action_reciept">Begeleidingsbrief</string>
 </resources>
