@@ -6,11 +6,12 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -18,7 +19,7 @@ import com.google.gson.JsonObject;
 import com.huzefa.combinatieherepoort.AppManager;
 import com.huzefa.combinatieherepoort.Constants;
 import com.huzefa.combinatieherepoort.R;
-import com.huzefa.combinatieherepoort.adapters.MyOrderRecyclerViewAdapter;
+import com.huzefa.combinatieherepoort.adapters.CustomSpinnerAdapter;
 import com.huzefa.combinatieherepoort.interfaces.OnListFragmentInteractionListener;
 import com.huzefa.combinatieherepoort.models.LoginModel;
 import com.huzefa.combinatieherepoort.models.OrderModel;
@@ -26,11 +27,23 @@ import com.huzefa.combinatieherepoort.models.OrderModelList;
 import com.huzefa.combinatieherepoort.retrofit.RestApi;
 import com.huzefa.combinatieherepoort.utility.Utility;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 import retrofit2.Retrofit;
 
 
@@ -47,6 +60,24 @@ public class OrderFragment extends Fragment {
     private RestApi mRestApi;
     private ProgressDialog mProgressDialog;
     private SharedPreferences mSharedPreferences;
+
+    @BindView(R.id.transactionNumberAutoTextView)
+    Spinner mTransactionNumberAutoTextView;
+
+    @BindView(R.id.materialTypeAutoTextView)
+    Spinner mMaterialTypeAutoTextView;
+
+    @BindView(R.id.clusterAutoTextView)
+    Spinner mClusterAutoTextView;
+
+    @BindView(R.id.lotNumberTextView)
+    TextView mLotNumberAutoTextView;
+
+    OrderModel mSelectedOrderModel;
+    LoginModel mLoginModel;
+
+    List<String> mTransactionNumberList, mMaterialTypeList, mClusterList;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -60,6 +91,8 @@ public class OrderFragment extends Fragment {
         Retrofit retrofit = ((AppManager) getActivity().getApplicationContext()).getRetrofit();
         mRestApi = retrofit.create(RestApi.class);
         mSharedPreferences = Utility.getSharedPrefernce(getContext());
+        mTransactionNumberList = new ArrayList<>();
+        mSelectedOrderModel = null;
     }
 
     @Override
@@ -67,51 +100,289 @@ public class OrderFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_list, container, false);
         mListener.setTitle(getString(R.string.app_name));
-        final RecyclerView recyclerView = (RecyclerView) view;
-        mProgressDialog = Utility.getProgressDialog(getContext(),"Please wait..","Loading Orders..");
+        ButterKnife.bind(this, view);
+        mProgressDialog = Utility.getProgressDialog(getContext(), "Please wait..", "Loading Orders..");
         mProgressDialog.show();
-        LoginModel loginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
+        mLoginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("api_token", loginModel.getToken());
+        jsonObject.addProperty("api_token", mLoginModel.getToken());
         mRestApi.getOrders(jsonObject)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Observer<OrderModelList>() {
-                @Override
-                public void onSubscribe(@NonNull Disposable d) {
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<OrderModelList>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
 
-                }
+                    }
 
-                @Override
-                public void onNext(@NonNull OrderModelList orderModels) {
-                    mProgressDialog.dismiss();
-                    if (orderModels.orders != null) {
-                        if(orderModels.orders.isEmpty()) {
-                            Toast.makeText(getContext(),"Currently no orders are available", Toast.LENGTH_LONG).show();
-                        } else {
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                            recyclerView.setAdapter(new MyOrderRecyclerViewAdapter(getContext(), orderModels.orders, mListener));
+                    @Override
+                    public void onNext(@NonNull final OrderModelList orderModels) {
+                        mProgressDialog.dismiss();
+                        if (orderModels.orders != null) {
+                            if (orderModels.orders.isEmpty()) {
+                                Toast.makeText(getContext(), "Currently no orders are available", Toast.LENGTH_LONG).show();
+                            } else {
+                                for (int i = 0; i < orderModels.orders.size(); i++) {
+                                    orderModels.orders.get(i).avoidNullPointer();
+                                }
+                                mTransactionNumberList = new ArrayList<String>();
+
+                                for (OrderModel orderModel : orderModels.orders) {
+                                    mTransactionNumberList.add(orderModel.transactionType);
+                                }
+                                if (!mTransactionNumberList.isEmpty()) {
+                                    Set<String> set = new HashSet<String>(mTransactionNumberList);
+                                    mTransactionNumberList.clear();
+                                    mTransactionNumberList.add(getString(R.string.select_transaction_hint));
+                                    mTransactionNumberList.addAll(set);
+                                    CustomSpinnerAdapter<String> adapterForTransaction = new CustomSpinnerAdapter<String>(
+                                            getContext(), R.layout.custom_auto_complete_dropdown, mTransactionNumberList);
+
+                                    adapterForTransaction.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                    mTransactionNumberAutoTextView.setAdapter(adapterForTransaction);
+                                    mMaterialTypeAutoTextView.setEnabled(true);
+                                    mTransactionNumberAutoTextView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                        @Override
+                                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                            setupMaterialType(orderModels, position);
+                                        }
+
+                                        @Override
+                                        public void onNothingSelected(AdapterView<?> parent) {
+
+                                        }
+                                    });
+
+                                    if(mTransactionNumberList.size() == 2) { // only 1 entry select it
+                                        mTransactionNumberAutoTextView.setSelection(1);
+                                    }
+                                }
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onError(@NonNull Throwable e) {
-                    Toast.makeText(getContext(), "Error Occured "+e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-                    if(e.getLocalizedMessage().contains("401 Unauthorized")) {
-                        mListener.logOutUser();
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        try {
+                            if (e.getLocalizedMessage().contains("401 Unauthorized")) {
+                                Toast.makeText(getContext(), "Error Occured " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                mListener.logOutUser();
+                            } else {
+                                ResponseBody responseBody = ((HttpException) e).response().errorBody();
+                                if (responseBody != null) {
+                                    JSONObject responseJson = new JSONObject(responseBody.string());
+                                    if ("failed".equals(responseJson.get("status"))) {
+                                        if ("pending order - redirect".equals(responseJson.get("message"))) {
+                                            mListener.onListFragmentInteraction(String.valueOf(responseJson.get("id")));
+                                        } else {
+                                            Toast.makeText(getContext(), "Error Occured " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(getContext(), "Error Occured " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    Toast.makeText(getContext(), "Error Occured " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                            Toast.makeText(getContext(), "Error Occured " + exception.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                        mProgressDialog.dismiss();
                     }
-                    mProgressDialog.dismiss();
-                }
 
-                @Override
-                public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                }
-            });
+                    }
+                });
         return view;
     }
 
+
+    private void setupMaterialType(final OrderModelList orderModels, int position) {
+        mSelectedOrderModel = null;
+        mMaterialTypeList = new ArrayList<String>();
+
+        for (OrderModel orderModel : orderModels.orders) {
+            if (orderModel.transactionType.equals(mTransactionNumberList.get(position))) {
+                mMaterialTypeList.add(orderModel.materialType);
+            }
+        }
+
+        if (!mMaterialTypeList.isEmpty() || position == 0) {
+            Set<String> set = new HashSet<String>(mMaterialTypeList);
+            mMaterialTypeList.clear();
+            mMaterialTypeList.add(getString(R.string.select_material_type_hint));
+            mMaterialTypeList.addAll(set);
+
+            if (position == 0) {
+                mMaterialTypeAutoTextView.setSelection(0);
+                mMaterialTypeAutoTextView.setEnabled(false);
+            } else {
+                mMaterialTypeAutoTextView.setEnabled(true);
+            }
+
+            CustomSpinnerAdapter<String> adapterForMaterialType = new CustomSpinnerAdapter<String>(
+                    getContext(), R.layout.custom_auto_complete_dropdown, mMaterialTypeList);
+
+            adapterForMaterialType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mMaterialTypeAutoTextView.setAdapter(adapterForMaterialType);
+            mClusterAutoTextView.setEnabled(true);
+
+            mMaterialTypeAutoTextView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    setupCluster(orderModels, position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            if(mMaterialTypeList.size() == 2) { // only 1 entry select it
+                mMaterialTypeAutoTextView.setSelection(1);
+            }
+        }
+    }
+
+    private void setupCluster(final OrderModelList orderModels, int position) {
+        mSelectedOrderModel = null;
+        mClusterList = new ArrayList<String>();
+        for (OrderModel orderModel : orderModels.orders) {
+            if (orderModel.materialType.equals(mMaterialTypeList.get(position))
+                    && orderModel.transactionType.equals(mTransactionNumberAutoTextView.getSelectedItem())) {
+                mClusterList.add(orderModel.cluster);
+            }
+        }
+
+        if (!mClusterList.isEmpty() || position == 0) {
+            Set<String> set = new HashSet<String>(mClusterList);
+            mClusterList.clear();
+            mClusterList.add(getString(R.string.select_cluster_hint));
+            mClusterList.addAll(set);
+
+            if (position == 0) {
+                mClusterAutoTextView.setSelection(0);
+                mClusterAutoTextView.setEnabled(false);
+            } else {
+                mClusterAutoTextView.setEnabled(true);
+            }
+            CustomSpinnerAdapter<String> adapter = new CustomSpinnerAdapter<String>(
+                    getContext(), R.layout.custom_auto_complete_dropdown, mClusterList);
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mClusterAutoTextView.setAdapter(adapter);
+            mLotNumberAutoTextView.setEnabled(true);
+            mClusterAutoTextView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    setupLotNumber(orderModels, position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+            if(mClusterList.size() == 2)  {// only 1 value then select it
+                mClusterAutoTextView.setSelection(1);
+            }
+
+        }
+    }
+
+    private void setupLotNumber(OrderModelList orderModels, int position) {
+        mSelectedOrderModel = null;
+        if (position == 0) {
+            mLotNumberAutoTextView.setText("");
+        } else {
+            for (OrderModel orderModel : orderModels.orders) {
+                if (orderModel.transactionType.equals(mTransactionNumberAutoTextView.getSelectedItem().toString()) &&
+                        orderModel.materialType.equals(mMaterialTypeAutoTextView.getSelectedItem().toString()) &&
+                        orderModel.cluster.equals(mClusterAutoTextView.getSelectedItem().toString())) {
+                    mLotNumberAutoTextView.setText(orderModel.lotNumber);
+                    mSelectedOrderModel = orderModel;
+                    break;
+                }
+            }
+
+            if (mSelectedOrderModel == null) {
+                mLotNumberAutoTextView.setText("");
+            }
+        }
+
+    }
+
+    @OnClick(R.id.saveOrderButton)
+    public void saveTransaction(View v) {
+        if (mSelectedOrderModel != null) {
+            mProgressDialog.show();
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("api_token", mLoginModel.getToken());
+            jsonObject.addProperty("partijnummer", mSelectedOrderModel.lotNumber);
+            mRestApi.createTransaction(jsonObject)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull final JsonObject response) {
+                            mProgressDialog.dismiss();
+                            if (response.get("status").getAsString().equals("success")) {
+                                mListener.onListFragmentInteraction(response.get("id").toString());
+                            } else {
+                                Toast.makeText(getContext(), "Failed: " + response.get("status"), Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            try {
+                                if (e.getLocalizedMessage().contains("401 Unauthorized")) {
+                                    Toast.makeText(getContext(), "Error Occured " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                    mListener.logOutUser();
+                                } else {
+                                    ResponseBody responseBody = ((HttpException) e).response().errorBody();
+                                    if (responseBody != null) {
+                                        JSONObject responseJson = new JSONObject(responseBody.string());
+                                        if ("failed".equals(responseJson.get("status"))) {
+                                            if ("pending order - redirect".equals(responseJson.get("message"))) {
+                                                mListener.onListFragmentInteraction(String.valueOf(responseJson.get("id")));
+                                            } else {
+                                                Toast.makeText(getContext(), "Error Occured " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        } else {
+                                            Toast.makeText(getContext(), "Error Occured " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(getContext(), "Error Occured " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            } catch (Exception exception) {
+                                exception.printStackTrace();
+                                Toast.makeText(getContext(), "Error Occured " + exception.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                            }
+                            mProgressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        } else {
+            Toast.makeText(getContext(), "All Values are Mandatory", Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -120,7 +391,7 @@ public class OrderFragment extends Fragment {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnListFragmentInteractionListener");
         }
     }
 

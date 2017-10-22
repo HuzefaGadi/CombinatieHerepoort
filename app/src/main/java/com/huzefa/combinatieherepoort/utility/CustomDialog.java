@@ -25,15 +25,17 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
     private Activity mActivity;
     private Dialog mDialog;
     private Button mConfirmButton, mDummyButton;
+    private String mWeight;
     private EditText mInputWeight;
     private View.OnClickListener mOnClickListener;
     private OnDialogCommunicationListener mDialogCommunicationListener;
 
-    public CustomDialog(Activity a, OnDialogCommunicationListener onDialogCommunicationListener) {
+    public CustomDialog(Activity a, OnDialogCommunicationListener onDialogCommunicationListener, String weight) {
         super(a);
         // TODO Auto-generated constructor stub
         this.mActivity = a;
         mDialogCommunicationListener = onDialogCommunicationListener;
+        mWeight = weight;
     }
 
     @Override
@@ -44,6 +46,9 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
         mConfirmButton = (Button) findViewById(R.id.confirm);
         mInputWeight = (EditText) findViewById(R.id.weightInput);
         mConfirmButton.setOnClickListener(this);
+        if(mWeight!=null) {
+            mInputWeight.setText(mWeight);
+        }
     }
 
     @Override

@@ -3,39 +3,40 @@ package com.huzefa.combinatieherepoort.models;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Huzefa Gadi on 6/15/2017.
+ * Created by Rashida on 19/10/17.
  */
 
 public class OrderModel {
 
-    public String id;
+    public static final String NULL_VALUE = "onbekend";
 
     @SerializedName("partijnummer")
     public String lotNumber;
 
-    public int status;
-
-    public String bonnummer;
-
-    @SerializedName("herkomst")
-    public String drainageLocation;
-
-    public String afvalstroomnummer;
-
     @SerializedName("materiaaltype")
     public String materialType;
 
-    @SerializedName("aantal_verpakkingen")
-    public String noOfPackages;
+    public String cluster;
 
-    @SerializedName("euralcode")
-    public String euralCode;
+    @SerializedName("type_transactie")
+    public String transactionType;
 
-    public SenderModel afvoerlocatie;
-    public SenderModel verwerkingslocatie;
-    public SenderModel afzender;
-    public SenderModel ontdoener;
-    public SenderModel bemiddelaar;
-    public SenderModel vervoerder;
+    public void avoidNullPointer() {
+        if(lotNumber == null) {
+            lotNumber = NULL_VALUE;
+        }
+        if(materialType == null) {
+            materialType = NULL_VALUE;
+        }
+
+        if(cluster == null) {
+            cluster = NULL_VALUE;
+        }
+
+        if (transactionType == null) {
+            transactionType = NULL_VALUE;
+        }
+    }
+
 
 }

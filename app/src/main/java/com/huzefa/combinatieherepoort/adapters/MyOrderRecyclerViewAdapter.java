@@ -12,22 +12,22 @@ import android.widget.TextView;
 
 import com.huzefa.combinatieherepoort.R;
 import com.huzefa.combinatieherepoort.interfaces.OnListFragmentInteractionListener;
-import com.huzefa.combinatieherepoort.models.OrderModel;
+import com.huzefa.combinatieherepoort.models.OrderDetailModel;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link OrderModel} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link OrderDetailModel} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
 public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecyclerViewAdapter.ViewHolder> {
 
-    private final List<OrderModel> mValues;
+    private final List<OrderDetailModel> mValues;
     private final OnListFragmentInteractionListener mListener;
     private Context mContext;
     private Typeface mTypeFace;
 
-    public MyOrderRecyclerViewAdapter(Context context, List<OrderModel> items, OnListFragmentInteractionListener listener) {
+    public MyOrderRecyclerViewAdapter(Context context, List<OrderDetailModel> items, OnListFragmentInteractionListener listener) {
         mContext = context;
         mValues = items;
         mListener = listener;
@@ -54,7 +54,7 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                   // mListener.onListFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -70,7 +70,7 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
         final TextView mPartNumberText;
         final TextView mContentView;
         final ImageView mStatusIcon;
-        OrderModel mItem;
+        OrderDetailModel mItem;
 
         ViewHolder(View view) {
             super(view);

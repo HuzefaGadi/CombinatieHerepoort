@@ -11,4 +11,7 @@ import java.util.Map;
 public class VehiclesModel {
     @SerializedName("kenteken")
     public Map<String,String> vehicleNumber;
+
+    @SerializedName("aanhangwagen")
+    public Map<String,String> hangingNumber;
 }

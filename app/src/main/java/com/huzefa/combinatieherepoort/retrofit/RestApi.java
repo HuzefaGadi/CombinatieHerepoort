@@ -3,13 +3,14 @@ package com.huzefa.combinatieherepoort.retrofit;
 import com.google.gson.JsonObject;
 import com.huzefa.combinatieherepoort.models.CredentialsModel;
 import com.huzefa.combinatieherepoort.models.LoginModel;
-import com.huzefa.combinatieherepoort.models.OrderModel;
+import com.huzefa.combinatieherepoort.models.OrderDetailModel;
+import com.huzefa.combinatieherepoort.models.OrderDetailModelList;
 import com.huzefa.combinatieherepoort.models.OrderModelList;
+import com.huzefa.combinatieherepoort.models.OutsourcedVehiclesModel;
 import com.huzefa.combinatieherepoort.models.VehiclesModel;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
-import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
@@ -30,12 +31,12 @@ public interface RestApi {
     Observable<JsonObject> saveVehicle(@Body JsonObject body);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST("orders")
+    @POST("getorders")
     Observable<OrderModelList> getOrders(@Body JsonObject body);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("order")
-    Observable<OrderModel> getOrder(@Body JsonObject body);
+    Observable<OrderDetailModel> getOrder(@Body JsonObject body);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("logout")
@@ -48,6 +49,24 @@ public interface RestApi {
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("order/setweight")
     Observable<JsonObject> setweight(@Body JsonObject body);
+
+    @POST("selectuitbesteedvervoerder")
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    Observable<OutsourcedVehiclesModel> getOutSourcedCarriers(@Body JsonObject body);
+
+    @POST("createtransaction")
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    Observable<JsonObject> createTransaction(@Body JsonObject body);
+
+    @POST("order/finish")
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    Observable<JsonObject> finish(@Body JsonObject body);
+
+    @POST("order/destroy")
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    Observable<JsonObject> destroy(@Body JsonObject body);
+
+
 
 
 }

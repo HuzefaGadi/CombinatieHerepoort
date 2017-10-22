@@ -1,14 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="com.huzefa.combinatieherepoort.fragments.OrderFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:context="com.huzefa.combinatieherepoort.fragments.OrderFragment"
-    tools:listitem="@layout/fragment_order"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/backgroundColor"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:context="com.huzefa.combinatieherepoort.fragments.OrderFragment">
+
+    <TextView
+        android:id="@+id/heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/order_page_heading"
+        android:textColor="@color/white"
+        android:textSize="25sp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/heading"
+        android:layout_margin="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/selectTransactionHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/select_transaction_heading"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+
+            <Spinner
+                android:id="@+id/transactionNumberAutoTextView"
+                style="@style/CustomSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/selectTransactionHeading"
+                android:layout_marginTop="10dp"
+                android:hint="@string/select_transaction_hint"
+                android:imeOptions="actionDone"
+                android:textColor="#000000">
+
+                <requestFocus/>
+            </Spinner>
+
+
+            <TextView
+                android:id="@+id/selectMaterialTypeHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/transactionNumberAutoTextView"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/select_material_type_heading"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+
+            <Spinner
+                android:id="@+id/materialTypeAutoTextView"
+                style="@style/CustomSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/selectMaterialTypeHeading"
+                android:layout_marginTop="10dp"
+                android:enabled="false"
+                android:hint="@string/select_material_type_hint"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="#000000"/>
+
+            <TextView
+                android:id="@+id/selectClusterHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/materialTypeAutoTextView"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/select_cluster_heading"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+
+            <Spinner
+                android:id="@+id/clusterAutoTextView"
+                style="@style/CustomSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/selectClusterHeading"
+                android:layout_marginTop="10dp"
+                android:enabled="false"
+                android:hint="@string/select_cluster_hint"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="#000000"/>
+
+            <TextView
+                android:id="@+id/selectLotNumberHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/clusterAutoTextView"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/select_lot_number_heading"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/lotNumberTextView"
+                style="@style/CustomEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/selectLotNumberHeading"
+                android:layout_marginTop="10dp"
+                android:hint="@string/select_lot_number_hint"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="#000000"/>
+
+            <Button
+                android:id="@+id/saveOrderButton"
+                style="@style/CustomButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lotNumberTextView"
+                android:layout_marginTop="30dp"
+                android:text="@string/select_vehicle_button_text"/>
+
+            <TextView
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/saveOrderButton"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/company_name"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
+

@@ -1,6 +1,6 @@
 package com.huzefa.combinatieherepoort.interfaces;
 
-import com.huzefa.combinatieherepoort.models.OrderModel;
+import com.huzefa.combinatieherepoort.models.OrderDetailModel;
 
 /**
  * Created by Rashida on 01/08/17.
@@ -8,8 +8,9 @@ import com.huzefa.combinatieherepoort.models.OrderModel;
 
 public interface OnListFragmentInteractionListener {
 
-    void onListFragmentInteraction(OrderModel item);
+    void onListFragmentInteraction(String id);
     void setTitle(String title);
     void showPdf(String id);
     void logOutUser();
+    void goToOrderPage();
 }

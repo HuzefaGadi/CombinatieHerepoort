@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +30,7 @@ import com.huzefa.combinatieherepoort.R;
 import com.huzefa.combinatieherepoort.adapters.OrderDetailsAdapter;
 import com.huzefa.combinatieherepoort.interfaces.OnListFragmentInteractionListener;
 import com.huzefa.combinatieherepoort.models.LoginModel;
-import com.huzefa.combinatieherepoort.models.OrderModel;
+import com.huzefa.combinatieherepoort.models.OrderDetailModel;
 import com.huzefa.combinatieherepoort.models.SenderModel;
 import com.huzefa.combinatieherepoort.retrofit.RestApi;
 import com.huzefa.combinatieherepoort.utility.CustomDialog;
@@ -42,14 +41,15 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
-
-import static android.R.attr.order;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,7 +66,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
     private RestApi mRestApi;
     private ProgressDialog mProgressDialog;
     private SharedPreferences mSharedPreferences;
-    private OrderModel mOrderModel;
+    private OrderDetailModel mOrderDetailModel;
 
     ExpandableListView expandableListView;
     ExpandableListAdapter expandableListAdapter;
@@ -79,6 +79,11 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
     Typeface font;
     Button mOrderActionButton;
     View mHeaderView;
+
+    @BindView(R.id.afronden_button)
+    Button mAfrondenButton;
+
+    LoginModel mLoginModel;
 
     private OnListFragmentInteractionListener mListener;
 
@@ -122,6 +127,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_order_details, container, false);
+        ButterKnife.bind(this,view);
         expandableListView = (ExpandableListView) view.findViewById(R.id.expandableListView);
 
         mProgressDialog = Utility.getProgressDialog(getContext(), "Please wait..", "Loading Orders..");
@@ -133,17 +139,17 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
         mRestApi.getOrder(jsonObject)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<OrderModel>() {
+                .subscribe(new Observer<OrderDetailModel>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(@NonNull OrderModel orderModel) {
+                    public void onNext(@NonNull OrderDetailModel orderDetailModel) {
                         mProgressDialog.dismiss();
-                        if (orderModel != null) {
-                            showOrderDetails(orderModel);
+                        if (orderDetailModel != null) {
+                            showOrderDetails(orderDetailModel);
                         }
                     }
 
@@ -164,8 +170,8 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
         return view;
     }
 
-    private void showOrderDetails(final OrderModel order) {
-        mOrderModel = order;
+    private void showOrderDetails(final OrderDetailModel order) {
+        mOrderDetailModel = order;
         mListener.setTitle(order.lotNumber);
         mHeaderView = getActivity().getLayoutInflater().inflate(R.layout.order_list_header, null);
         mStatusIcon = (ImageView) mHeaderView.findViewById(R.id.statusIcon);
@@ -188,7 +194,15 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
 
         mOrderActionButton = (Button) getView().findViewById(R.id.order_action_button);
         mOrderActionButton.setBackgroundColor(getResources().getColor(order.status == 1 ? R.color.order_pending_button_color : R.color.order_accepted_button_color));
-        mOrderActionButton.setText(getString(order.status == 1 ? R.string.order_pending_button_text : R.string.order_accepted_button_text));
+        mOrderActionButton.setText(getString(order.status == 1  ? R.string.order_pending_button_text : R.string.order_accepted_button_text));
+        try {
+            if(Double.parseDouble(order.weight) > 0.0) {
+                mOrderActionButton.setText(order.weight);
+                mAfrondenButton.setEnabled(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mOrderActionButton.setTypeface(font);
 
         mOrderActionButton.setOnClickListener(new View.OnClickListener() {
@@ -213,7 +227,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
                     });
                     builder.show();
                 } else {
-                    final CustomDialog customDialog = new CustomDialog(getActivity(), OrderDetailsFragment.this);
+                    final CustomDialog customDialog = new CustomDialog(getActivity(), OrderDetailsFragment.this, order.weight);
                     customDialog.show();
                 }
             }
@@ -280,7 +294,7 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
         return (int) (pixels * scale + 0.5f);
     }
 
-    public void confirmOrder(final OrderModel order) {
+    public void confirmOrder(final OrderDetailModel order) {
         final ProgressDialog progressDialog = Utility.getProgressDialog(getActivity(), "Please wait..", "Confirming");
         progressDialog.show();
         LoginModel loginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
@@ -327,13 +341,13 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
 
 
     @Override
-    public void setWeight(final CustomDialog customDialog, String weight) {
+    public void setWeight(final CustomDialog customDialog, final String weight) {
 
         final ProgressDialog progressDialog = Utility.getProgressDialog(getActivity(), "Please wait..", "Confirming");
         progressDialog.show();
-        LoginModel loginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
+        mLoginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("api_token", loginModel.getToken());
+        jsonObject.addProperty("api_token", mLoginModel.getToken());
         jsonObject.addProperty("id", mOrderId);
         jsonObject.addProperty("hoeveelheid", weight);
         mRestApi.setweight(jsonObject)
@@ -348,9 +362,77 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
                     @Override
                     public void onNext(@NonNull JsonObject s) {
                         progressDialog.dismiss();
+                        mAfrondenButton.setEnabled(true);
                         if (s != null && s.has("status") && s.get("status").getAsString().equalsIgnoreCase("success")) {
                             customDialog.dismiss();
-                            getActivity().getSupportFragmentManager().popBackStack();
+                            mOrderActionButton.setText(weight);
+                        } else {
+                            Toast.makeText(getContext(), "Error occured " + s, Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        progressDialog.dismiss();
+                        mAfrondenButton.setEnabled(false);
+                        Toast.makeText(getContext(), "Error occured " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        if(e.getLocalizedMessage().contains("401 Unauthorized")) {
+                            mListener.logOutUser();
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    @OnClick(R.id.afronden_button)
+    public void onAfrondenButtonClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Please confirm");
+        builder.setMessage("Are you sure you want to continue ?");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // do api calls
+                confirmFinish();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+
+    }
+
+    private void confirmFinish() {
+        final ProgressDialog progressDialog = Utility.getProgressDialog(getActivity(), "Please wait..", "Confirming");
+        progressDialog.show();
+        mLoginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("api_token", mLoginModel.getToken());
+        jsonObject.addProperty("id", mOrderId);
+        mRestApi.finish(jsonObject)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull JsonObject s) {
+                        progressDialog.dismiss();
+                        mAfrondenButton.setEnabled(true);
+                        if (s != null && s.has("status") && s.get("status").getAsString().equalsIgnoreCase("success")) {
+                            mListener.goToOrderPage();
                         } else {
                             Toast.makeText(getContext(), "Error occured " + s, Toast.LENGTH_LONG).show();
                         }
@@ -373,6 +455,50 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
                 });
     }
 
+    private void confirmDelete() {
+            final ProgressDialog progressDialog = Utility.getProgressDialog(getActivity(), "Please wait..", "Confirming");
+            progressDialog.show();
+            mLoginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("api_token", mLoginModel.getToken());
+            jsonObject.addProperty("id", mOrderId);
+            mRestApi.destroy(jsonObject)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull JsonObject s) {
+                            progressDialog.dismiss();
+                            mAfrondenButton.setEnabled(true);
+                            if (s != null && s.has("status") && s.get("status").getAsString().equalsIgnoreCase("success")) {
+                                mListener.goToOrderPage();
+                            } else {
+                                Toast.makeText(getContext(), "Error occured " + s, Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), "Error occured " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            if(e.getLocalizedMessage().contains("401 Unauthorized")) {
+                                mListener.logOutUser();
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
@@ -383,10 +509,29 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                if(mOrderModel!=null){
-                    mListener.showPdf(mOrderModel.bonnummer);
+            case R.id.action_show_reciept:
+                if(mOrderDetailModel !=null){
+                    mListener.showPdf(mOrderDetailModel.bonnummer);
                 }
+                return true;
+            case R.id.action_delete:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Please confirm");
+                builder.setMessage("Are you sure you want to continue ?");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do api calls
+                        confirmDelete();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

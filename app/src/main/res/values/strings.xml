@@ -22,6 +22,27 @@
     <string name="select_vehicle_button_text">BEVESTIGEN</string>
     <string name="select_vehicle_hint">type uw kenteken</string>
 
+    <string name="select_hanging_heading">selecteer aanhanggen (optioneel)</string>
+    <string name="select_hanging_hint">type uw kenteken</string>
+
+    <string name="select_outsourced_carrier_heading">uitbesteed vervoerder</string>
+    <string name="select_outsourced_carrier_hint">type uw kenteken</string>
+
+    <string name="select_transaction_heading">Type transactie</string>
+    <string name="select_transaction_hint">type uw transactie</string>
+
+    <string name="select_material_type_heading">materiaalsoort</string>
+    <string name="select_material_type_hint">type uw materiaalsoort</string>
+
+    <string name="select_cluster_heading">Cluster</string>
+    <string name="select_cluster_hint">type uw cluster</string>
+
+
+    <string name="select_lot_number_heading">Partijnummer</string>
+    <string name="select_lot_number_hint">type uw partijnummer</string>
+
+
+
 
     <string name="menu_orders">Orders</string>
     <string name="menu_settings">Instellingen</string>
@@ -37,4 +58,7 @@
     <string name="comfirm_order_dialog_dummy_button_text">OPVRAGEN</string>
     <string name="confirm_order_dialog_input_hint">0.000 (ton)</string>
     <string name="action_reciept">Begeleidingsbrief</string>
+    <string name="afronden_button_text">Afronden</string>
+    <string name="order_page_heading">RIT AANMAKEN</string>
+    <string name="action_delete">Verwijderen</string>
 </resources>

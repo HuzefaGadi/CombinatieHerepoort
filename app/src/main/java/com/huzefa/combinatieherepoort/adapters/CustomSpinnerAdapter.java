@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Rashida on 10/06/17.
  */
 
-public class CustomSpinnerAdapter<T> extends ArrayAdapter<VehicleBean> {
+public class CustomSpinnerAdapter<T> extends ArrayAdapter<T> {
     // Initialise custom font, for example:
     Typeface font = Typeface.createFromAsset(getContext().getAssets(),
             "font.ttf");
@@ -23,7 +23,7 @@ public class CustomSpinnerAdapter<T> extends ArrayAdapter<VehicleBean> {
     // (In reality I used a manager which caches the Typeface objects)
     // Typeface font = FontManager.getInstance().getFont(getContext(), BLAMBOT);
 
-    public CustomSpinnerAdapter(Context context, int resource, List<VehicleBean> items) {
+    public CustomSpinnerAdapter(Context context, int resource, List<T> items) {
         super(context, resource, items);
     }
 

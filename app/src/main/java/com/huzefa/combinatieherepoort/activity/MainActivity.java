@@ -26,8 +26,7 @@ import com.huzefa.combinatieherepoort.fragments.OrderFragment;
 import com.huzefa.combinatieherepoort.fragments.RecieptFragment;
 import com.huzefa.combinatieherepoort.interfaces.OnListFragmentInteractionListener;
 import com.huzefa.combinatieherepoort.models.LoginModel;
-import com.huzefa.combinatieherepoort.models.OrderModel;
-import com.huzefa.combinatieherepoort.models.UserModel;
+import com.huzefa.combinatieherepoort.models.OrderDetailModel;
 import com.huzefa.combinatieherepoort.retrofit.RestApi;
 import com.huzefa.combinatieherepoort.utility.Utility;
 
@@ -37,6 +36,8 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
+
+import static android.R.attr.id;
 
 
 public class MainActivity extends AppCompatActivity
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_orders) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_content, new OrderFragment())
-                    .addToBackStack("order").commit();
+                    .commit();
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_logout) {
@@ -110,11 +111,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(OrderModel item) {
-        OrderDetailsFragment orderDetailsFragment = OrderDetailsFragment.newInstance(item.id);
+    public void onListFragmentInteraction(String id) {
+        OrderDetailsFragment orderDetailsFragment = OrderDetailsFragment.newInstance(id);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_content, orderDetailsFragment)
-                .addToBackStack("order_details")
                 .commit();
     }
 
@@ -129,13 +129,20 @@ public class MainActivity extends AppCompatActivity
         RecieptFragment orderDetailsFragment = RecieptFragment.newInstance(id);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_content, orderDetailsFragment)
-                .addToBackStack("order_reciept")
                 .commit();
     }
 
     @Override
     public void logOutUser() {
         Utility.logoutUser(this);
+    }
+
+    @Override
+    public void goToOrderPage() {
+        OrderFragment orderDetailsFragment = new OrderFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_content, orderDetailsFragment)
+                .commit();
     }
 
     private void logOut() {
