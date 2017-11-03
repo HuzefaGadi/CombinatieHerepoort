@@ -12,9 +12,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.huzefa.combinatieherepoort.R;
-import com.huzefa.combinatieherepoort.fragments.OrderDetailsFragment;
-
-import static android.R.attr.order;
 
 /**
  * Created by Rashida on 02/08/17.
@@ -60,8 +57,8 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
                 if(decimals.length == 2) {
                     if(decimals[1].length() == 3) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                        builder.setTitle("Please confirm");
-                        builder.setMessage("Are you sure you want to continue ?");
+                        builder.setTitle("Let op!");
+                        builder.setMessage("Wilt u dit ladingsgewicht inoveren?");
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

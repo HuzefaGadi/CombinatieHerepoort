@@ -106,6 +106,9 @@ public class OrderFragment extends Fragment {
         mLoginModel = new Gson().fromJson(mSharedPreferences.getString(Constants.PREF_USER, null), LoginModel.class);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("api_token", mLoginModel.getToken());
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(),
+                "font.ttf");
+        mLotNumberAutoTextView.setTypeface(font);
         mRestApi.getOrders(jsonObject)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -153,7 +156,7 @@ public class OrderFragment extends Fragment {
                                         }
                                     });
 
-                                    if(mTransactionNumberList.size() == 2) { // only 1 entry select it
+                                    if (mTransactionNumberList.size() == 2) { // only 1 entry select it
                                         mTransactionNumberAutoTextView.setSelection(1);
                                     }
                                 }
@@ -243,7 +246,7 @@ public class OrderFragment extends Fragment {
                 }
             });
 
-            if(mMaterialTypeList.size() == 2) { // only 1 entry select it
+            if (mMaterialTypeList.size() == 2) { // only 1 entry select it
                 mMaterialTypeAutoTextView.setSelection(1);
             }
         }
@@ -288,7 +291,7 @@ public class OrderFragment extends Fragment {
 
                 }
             });
-            if(mClusterList.size() == 2)  {// only 1 value then select it
+            if (mClusterList.size() == 2) {// only 1 value then select it
                 mClusterAutoTextView.setSelection(1);
             }
 

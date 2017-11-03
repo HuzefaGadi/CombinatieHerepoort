@@ -33,7 +33,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="40dp"
         android:hint="@string/confirm_order_dialog_input_hint"
-        android:inputType="numberDecimal"/>
+        android:inputType="numberDecimal" />
 
 
     <LinearLayout

@@ -210,8 +210,8 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
             public void onClick(View v) {
                 if (order.status == 1) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Please confirm");
-                    builder.setMessage("Are you sure you want to continue ?");
+                    builder.setTitle("Let op!");
+                    builder.setMessage("Wilt u deze order accepteren?");
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -392,8 +392,8 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
     @OnClick(R.id.afronden_button)
     public void onAfrondenButtonClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Please confirm");
-        builder.setMessage("Are you sure you want to continue ?");
+        builder.setTitle("Let op!");
+        builder.setMessage("Hiermee voltooid u deze rit. Doorgaan?");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -516,8 +516,8 @@ public class OrderDetailsFragment extends Fragment implements CustomDialog.OnDia
                 return true;
             case R.id.action_delete:
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Please confirm");
-                builder.setMessage("Are you sure you want to continue ?");
+                builder.setTitle("Let op!");
+                builder.setMessage("Hiermee wordt deze rit verwijderd. Doorgaan?");
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

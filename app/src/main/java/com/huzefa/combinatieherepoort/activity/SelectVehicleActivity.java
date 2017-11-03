@@ -6,10 +6,13 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,8 +48,6 @@ import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import retrofit2.Retrofit;
 
-import static java.security.AccessController.getContext;
-
 public class SelectVehicleActivity extends AppCompatActivity {
 
     @BindView(R.id.vehicleNumberAutoTextView)
@@ -58,14 +59,20 @@ public class SelectVehicleActivity extends AppCompatActivity {
     @BindView(R.id.outsourcedCarrierNumberAutoTextView)
     AutoCompleteTextView mOutsourcedCarrierNumberAutoTextView;
 
-
     @BindView(R.id.selectHangingHeading)
     TextView mSelectHangingHeading;
+
     @BindView(R.id.selectOutsourcedCarrierHeading)
     TextView mSelectOutsourcedCarrierHeading;
 
     @BindView(R.id.saveVehicleButton)
     Button mSaveVehicleButton;
+
+    @BindView(R.id.vehicleNumberWeight)
+    EditText mVehicleWeight;
+
+    @BindView(R.id.hangingNumberWeight)
+    EditText mHangingWeight;
 
     private static String TAG;
     private RestApi mRestApi;
@@ -118,8 +125,8 @@ public class SelectVehicleActivity extends AppCompatActivity {
                     @Override
                     public void onNext(@NonNull VehiclesModel vehiclesModel) {
                         mVehicleModel = vehiclesModel;
-                        for (Map.Entry<String, String> entry : vehiclesModel.vehicleNumber.entrySet()) {
-                            mVehicleList.add(new VehicleBean(entry.getKey(), entry.getValue()));
+                        if (!vehiclesModel.vehicleNumber.isEmpty()) {
+                            mVehicleList.addAll(vehiclesModel.vehicleNumber);
                         }
 
                         CustomSpinnerAdapter<VehicleBean> adapter = new CustomSpinnerAdapter<VehicleBean>(
@@ -129,9 +136,10 @@ public class SelectVehicleActivity extends AppCompatActivity {
                         mVehicleNumberAutoTextView.setAdapter(adapter);
 
                         if (!vehiclesModel.hangingNumber.isEmpty()) {
-                            for (Map.Entry<String, String> entry : vehiclesModel.hangingNumber.entrySet()) {
+                            /*for (Map.Entry<String, HangingBean> entry : vehiclesModel.hangingNumber.entrySet()) {
                                 mHangingList.add(new HangingBean(entry.getKey(), entry.getValue()));
-                            }
+                            }*/
+                            mHangingList.addAll(vehiclesModel.hangingNumber);
                             CustomSpinnerAdapter<HangingBean> adapterForHanging = new CustomSpinnerAdapter<HangingBean>(
                                     getApplicationContext(), R.layout.custom_auto_complete_dropdown, mHangingList);
 
@@ -207,6 +215,62 @@ public class SelectVehicleActivity extends AppCompatActivity {
                     }
                 });
 
+        mVehicleNumberAutoTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String item = String.valueOf(charSequence);
+                boolean matchFound = false;
+                for (VehicleBean vehicleBean : mVehicleList) {
+                    if (vehicleBean.toString().equals(item)) {
+                        mVehicleWeight.setText(vehicleBean.leeggewicht);
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound) {
+                    mVehicleWeight.setText("");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mHangingNumberAutoTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String item = String.valueOf(charSequence);
+                boolean matchFound = false;
+                for (HangingBean hangingBean : mHangingList) {
+                    if (hangingBean.toString().equals(item)) {
+                        mHangingWeight.setText(hangingBean.leeggewicht);
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound) {
+                    mHangingWeight.setText("");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
 
     }
 
@@ -222,6 +286,25 @@ public class SelectVehicleActivity extends AppCompatActivity {
                     vehicleTemp = vehicleBean;
                 }
             }
+
+            String vehicleWeight = mVehicleWeight.getText().toString();
+            if (!vehicleWeight.isEmpty() && !vehicleWeight.contains(",")) {
+                String decimals[] = vehicleWeight.split("\\.");
+                if (decimals.length == 2) {
+                    if (decimals[1].length() == 3 && decimals[0].length() > 0 && decimals[0].length() <= 2) {
+                        vehicleTemp.leeggewicht = vehicleWeight;
+                    } else {
+                        mProgressDialog.dismiss();
+                        Toast.makeText(this, "Incorrect Vehicle Weight",Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                } else {
+                    mProgressDialog.dismiss();
+                    Toast.makeText(this, "Incorrect Vehicle Weight",Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+
             String hangingVehicleName = mHangingNumberAutoTextView.getText().toString();
             HangingBean hangingBeanTemp = null;
             if (!mHangingList.isEmpty()) {
@@ -229,6 +312,24 @@ public class SelectVehicleActivity extends AppCompatActivity {
                     if (hangingBean.toString().equalsIgnoreCase(hangingVehicleName)) {
                         hangingBeanTemp = hangingBean;
                     }
+                }
+            }
+
+            String hangingWeight = mHangingWeight.getText().toString();
+            if (!hangingWeight.isEmpty() && !hangingWeight.contains(",")) {
+                String decimals[] = hangingWeight.split("\\.");
+                if (decimals.length == 2) {
+                    if (decimals[1].length() == 3 && decimals[0].length() > 0 && decimals[0].length() <= 2) {
+                        hangingBeanTemp.leeggewicht = hangingWeight;
+                    } else {
+                        mProgressDialog.dismiss();
+                        Toast.makeText(this, "Incorrect Hanging Weight",Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                } else {
+                    mProgressDialog.dismiss();
+                    Toast.makeText(this, "Incorrect Hanging Weight",Toast.LENGTH_LONG).show();
+                    return;
                 }
             }
 
@@ -248,7 +349,9 @@ public class SelectVehicleActivity extends AppCompatActivity {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("api_token", mLoginModel.getToken());
                 jsonObject.addProperty("selectkenteken", Integer.parseInt(vehicle.id));
+                jsonObject.addProperty("voertuigleeggewicht", vehicle.leeggewicht);
                 jsonObject.addProperty("selectaanhangwagen", hanging != null ? Integer.parseInt(hanging.id) : null);
+                jsonObject.addProperty("aanhangwagenleeggewicht", hanging != null ? hanging.leeggewicht : null);
                 jsonObject.addProperty("uitbesteed_id", outsourcedCarrier != null ? Integer.parseInt(outsourcedCarrier.id) : null);
                 mRestApi.saveVehicle(jsonObject)
                         .subscribeOn(Schedulers.newThread())

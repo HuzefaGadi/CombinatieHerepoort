@@ -4,7 +4,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Instellingen</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -18,28 +18,28 @@
     <string name="login_button_text">INLOGGEN</string>
 
 
-    <string name="select_vehicle_heading">Selecteer hier uw voertuig...</string>
+    <string name="select_vehicle_heading">Kenteken voertuig</string>
     <string name="select_vehicle_button_text">BEVESTIGEN</string>
     <string name="select_vehicle_hint">type uw kenteken</string>
 
-    <string name="select_hanging_heading">selecteer aanhanggen (optioneel)</string>
+    <string name="select_hanging_heading">Aanhanger (optioneel)</string>
     <string name="select_hanging_hint">type uw kenteken</string>
 
-    <string name="select_outsourced_carrier_heading">uitbesteed vervoerder</string>
-    <string name="select_outsourced_carrier_hint">type uw kenteken</string>
+    <string name="select_outsourced_carrier_heading">Uitbesteed vervoerder?</string>
+    <string name="select_outsourced_carrier_hint">type vervoerder</string>
 
     <string name="select_transaction_heading">Type transactie</string>
-    <string name="select_transaction_hint">type uw transactie</string>
+    <string name="select_transaction_hint">selecteer...</string>
 
-    <string name="select_material_type_heading">materiaalsoort</string>
-    <string name="select_material_type_hint">type uw materiaalsoort</string>
+    <string name="select_material_type_heading">Materiaalsoort</string>
+    <string name="select_material_type_hint">selecteer...</string>
 
     <string name="select_cluster_heading">Cluster</string>
-    <string name="select_cluster_hint">type uw cluster</string>
+    <string name="select_cluster_hint">selecteer...</string>
 
 
     <string name="select_lot_number_heading">Partijnummer</string>
-    <string name="select_lot_number_hint">type uw partijnummer</string>
+    <string name="select_lot_number_hint">selecteer...</string>
 
 
 
@@ -58,7 +58,10 @@
     <string name="comfirm_order_dialog_dummy_button_text">OPVRAGEN</string>
     <string name="confirm_order_dialog_input_hint">0.000 (ton)</string>
     <string name="action_reciept">Begeleidingsbrief</string>
-    <string name="afronden_button_text">Afronden</string>
+    <string name="afronden_button_text">AFRONDEN</string>
     <string name="order_page_heading">RIT AANMAKEN</string>
     <string name="action_delete">Verwijderen</string>
+    <string name="hanging_weight_hint">00.000 ton</string>
+    <string name="vehicle_weight_hint">00.000 ton</string>
+    <string name="my_paypal_account">arwahaji91@gmail.com</string>
 </resources>
