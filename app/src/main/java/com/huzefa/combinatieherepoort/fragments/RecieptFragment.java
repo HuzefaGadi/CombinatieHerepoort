@@ -70,7 +70,7 @@ public class RecieptFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reciept, container, false);
         mWebView = (WebView) view.findViewById(R.id.pdfView);
        // mWebView = (PDFView) view.findViewById(R.id.pdfView);
-        String pdf = "http://128.199.41.181/transactie/" + mRecieptId + "/pdf";
+        String pdf = "http://178.62.251.178/transactie/" + mRecieptId + "/pdf";
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setUseWideViewPort(true);

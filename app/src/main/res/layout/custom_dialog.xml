@@ -32,6 +32,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="40dp"
+        android:allowUndo="true"
         android:hint="@string/confirm_order_dialog_input_hint"
         android:inputType="numberDecimal" />
 

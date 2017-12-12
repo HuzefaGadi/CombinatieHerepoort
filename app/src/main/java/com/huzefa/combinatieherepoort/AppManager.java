@@ -32,7 +32,7 @@ public class AppManager extends Application {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
-                .baseUrl("http://128.199.41.181/api/")
+                .baseUrl("http://178.62.251.178/api/")
                 .build();
     }
 

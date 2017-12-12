@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -70,13 +69,13 @@ public class OrderFragment extends Fragment {
     @BindView(R.id.clusterAutoTextView)
     Spinner mClusterAutoTextView;
 
-    @BindView(R.id.lotNumberTextView)
-    TextView mLotNumberAutoTextView;
+    @BindView(R.id.lotNumberAutoTextView)
+    Spinner mLotNumberAutoTextView;
 
     OrderModel mSelectedOrderModel;
     LoginModel mLoginModel;
 
-    List<String> mTransactionNumberList, mMaterialTypeList, mClusterList;
+    List<String> mTransactionNumberList, mMaterialTypeList, mClusterList, mLotNumberList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -108,7 +107,7 @@ public class OrderFragment extends Fragment {
         jsonObject.addProperty("api_token", mLoginModel.getToken());
         Typeface font = Typeface.createFromAsset(getContext().getAssets(),
                 "font.ttf");
-        mLotNumberAutoTextView.setTypeface(font);
+        //mLotNumberAutoTextView.setTypeface(font);
         mRestApi.getOrders(jsonObject)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -298,26 +297,56 @@ public class OrderFragment extends Fragment {
         }
     }
 
-    private void setupLotNumber(OrderModelList orderModels, int position) {
+    private void setupLotNumber(final OrderModelList orderModels, int position) {
         mSelectedOrderModel = null;
-        if (position == 0) {
-            mLotNumberAutoTextView.setText("");
-        } else {
-            for (OrderModel orderModel : orderModels.orders) {
-                if (orderModel.transactionType.equals(mTransactionNumberAutoTextView.getSelectedItem().toString()) &&
-                        orderModel.materialType.equals(mMaterialTypeAutoTextView.getSelectedItem().toString()) &&
-                        orderModel.cluster.equals(mClusterAutoTextView.getSelectedItem().toString())) {
-                    mLotNumberAutoTextView.setText(orderModel.lotNumber);
-                    mSelectedOrderModel = orderModel;
-                    break;
-                }
-            }
-
-            if (mSelectedOrderModel == null) {
-                mLotNumberAutoTextView.setText("");
+        mLotNumberList = new ArrayList<>();
+        for (OrderModel orderModel : orderModels.orders) {
+            if (orderModel.transactionType.equals(mTransactionNumberAutoTextView.getSelectedItem().toString()) &&
+                    orderModel.materialType.equals(mMaterialTypeAutoTextView.getSelectedItem().toString()) &&
+                    orderModel.cluster.equals(mClusterAutoTextView.getSelectedItem().toString())) {
+                mLotNumberList.add(orderModel.lotNumber);
             }
         }
+        if(!mLotNumberList.isEmpty() || position == 0) {
 
+            Set<String> set = new HashSet<String>(mLotNumberList);
+            mLotNumberList.clear();
+            mLotNumberList.add(getString(R.string.select_lot_number_hint));
+            mLotNumberList.addAll(set);
+
+
+            if (position == 0) {
+                mLotNumberAutoTextView.setSelection(0);
+                mLotNumberAutoTextView.setEnabled(false);
+            } else {
+                mLotNumberAutoTextView.setEnabled(true);
+            }
+
+            CustomSpinnerAdapter<String> adapter = new CustomSpinnerAdapter<String>(
+                    getContext(), R.layout.custom_auto_complete_dropdown, mLotNumberList);
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mLotNumberAutoTextView.setAdapter(adapter);
+            mLotNumberAutoTextView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if(position != 0) {
+                        mSelectedOrderModel = orderModels.orders.get(position-1);
+                    } else {
+                        mSelectedOrderModel = null;
+                    }
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+            if (mLotNumberList.size() == 2) {// only 1 value then select it
+                mLotNumberAutoTextView.setSelection(1);
+            }
+        }
     }
 
     @OnClick(R.id.saveOrderButton)
