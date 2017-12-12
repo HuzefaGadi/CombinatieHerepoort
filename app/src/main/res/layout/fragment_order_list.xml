@@ -113,27 +113,27 @@
                 android:textColor="@color/white"
                 android:textSize="18sp"/>
 
-            <TextView
-                android:id="@+id/lotNumberTextView"
-                style="@style/CustomEditText"
-                android:textSize="13sp"
-                android:paddingLeft="20dp"
+
+            <Spinner
+                android:id="@+id/lotNumberAutoTextView"
+                style="@style/CustomSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/selectLotNumberHeading"
                 android:layout_marginTop="10dp"
+                android:enabled="false"
                 android:hint="@string/select_lot_number_hint"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <Button
                 android:id="@+id/saveOrderButton"
                 style="@style/CustomButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/lotNumberTextView"
+                android:layout_below="@+id/lotNumberAutoTextView"
                 android:layout_marginTop="30dp"
                 android:text="@string/select_vehicle_button_text"/>
 

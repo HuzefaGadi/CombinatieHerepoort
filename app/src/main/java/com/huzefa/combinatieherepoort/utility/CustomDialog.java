@@ -58,7 +58,7 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
                     if(decimals[1].length() == 3) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                         builder.setTitle("Let op!");
-                        builder.setMessage("Wilt u dit ladingsgewicht inoveren?");
+                        builder.setMessage("Wilt u dit (vracht)gewicht invoeren?");
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
