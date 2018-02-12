@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -309,7 +310,7 @@ public class OrderFragment extends Fragment {
         }
         if(!mLotNumberList.isEmpty() || position == 0) {
 
-            Set<String> set = new HashSet<String>(mLotNumberList);
+            Set<String> set = new LinkedHashSet<String>(mLotNumberList);
             mLotNumberList.clear();
             mLotNumberList.add(getString(R.string.select_lot_number_hint));
             mLotNumberList.addAll(set);
