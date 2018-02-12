@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,9 +11,10 @@
 
 
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/logo">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 android:gravity="center"
                 android:text="@string/select_vehicle_heading"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:id="@+id/vehicleNumberLayout"
@@ -76,7 +76,7 @@
                 android:gravity="center"
                 android:text="@string/select_hanging_heading"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:id="@+id/hangingNumberLayout"
@@ -125,7 +125,7 @@
                 android:gravity="center"
                 android:text="@string/select_outsourced_carrier_heading"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="18sp" />
 
             <AutoCompleteTextView
                 android:id="@+id/outsourcedCarrierNumberAutoTextView"
@@ -160,7 +160,15 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/select_vehicle_button_text" />
 
-
+            <TextView
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:text="@string/company_name"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
         </RelativeLayout>
-    </RelativeLayout>
-</ScrollView>
+    </ScrollView>
+</RelativeLayout>
